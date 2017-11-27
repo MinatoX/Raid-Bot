@@ -18,6 +18,10 @@ var refresh = false; //Are we doing a refresh?
 
 var NOTIFY_CHANNEL; //Channel we are posting our call messages in
 
+var templarID = "<@&382682913529135105>";
+var paladinID = "<@&285952745792471042>";
+var currentID = paladinID;
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -43,7 +47,7 @@ var time = function() { //We're doing our callouts here!
     } else if (timer > callTime && !refresh) { //If our timer exceeds our calltimer, send a new raid notification!
         bot.sendMessage({ //Notify everyone
             to: NOTIFY_CHANNEL,
-            message: "Attack "+raidQueue[playerAttacking]+"'s boss, <@&383407248422207490>!" //Replace brackets w/ appropriate role ID
+            message: "Attack "+raidQueue[playerAttacking]+"'s boss,"+currentID+"!" //Make the callout
         });
         timer = 0; //Reset our timer
         playerAttacking++; //Change the player in the queue
@@ -52,7 +56,7 @@ var time = function() { //We're doing our callouts here!
             refresh = true; //Give players the chance to summon new raid bosses
             bot.sendMessage({ //Notify everyone
                 to: NOTIFY_CHANNEL,
-                message: "Refresh your bosses <@&383407248422207490>!" //Replace brackets w/ appropriate role ID
+                message: "Refresh your bosses "+currentID+"!" //Replace brackets w/ appropriate role ID
             });
         }
     }
@@ -168,9 +172,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             break;
 
             //RAID COMMANDS//
-            case 'raidstart': //Starts the raid calls
-                if (!activeRaid && raidQueue.length > 0) {
+            case 'raidstart': //ARG [TEMPLARS OR PALADINS] //Starts the raid calls
+                if (!activeRaid && raidQueue.length > 0 && args[1] == "templars" || !activeRaid && raidQueue.length > 0 && args[1] == "paladins") {
                     activeRaid = true;
+                    if (args[1] == "templars") {
+                        currentID = templarID;
+                    } else {
+                        currentID = paladinID;
+                    }
                     NOTIFY_CHANNEL = channelID;
                     bot.sendMessage({
                         to: channelID,
@@ -254,7 +263,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             case 'help': //Display all of our commands!
                 bot.sendMessage({
                     to: channelID,
-                    message: "Available commands:\n~q [PLAYER(S)]: Adds player(s) to the raid queue\n~qcheck: Lists all players queued\n~qclear: Removes all players from raid queue\n~qremove [PLAYER]: Removes player from the raid queue\n~raidstart: Starts the raid callouts\n~raidstop: Ends the raid callouts\n~calltime [SECONDS]: Resets call time in seconds. Leaving the argument empty will display current time.\n~refreshtime [SECONDS]: Same as above but for the refresh timer\n~skip: Skips to the next player in the raid queue. Does nothing if there is not a raid going on."
+                    message: "Available commands:\n~q [PLAYER(S)]: Adds player(s) to the raid queue\n~qcheck: Lists all players queued\n~qclear: Removes all players from raid queue\n~qremove [PLAYER]: Removes player from the raid queue\n~raidstart [TEMPLARS/PALADINS]: Starts the raid callouts for the respective group\n~raidstop: Ends the raid callouts\n~calltime [SECONDS]: Resets call time in seconds. Leaving the argument empty will display current time.\n~refreshtime [SECONDS]: Same as above but for the refresh timer\n~skip: Skips to the next player in the raid queue. Does nothing if there is not a raid going on."
                 });
 
             break;
