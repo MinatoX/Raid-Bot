@@ -10,13 +10,13 @@ var callTime = 60; //Time in seconds between callouts
 var refreshTime = 90; //Time in seconds for refreshing bosses
 
 var activeRaid = false; //Are we currently raiding?
-var timer = 0;
-var timeInt;
+var timer = 0; //Countdown until we move on
+var timeInt; //Holds the interval for our time function
 
-var playerAttacking = 0;
-var refresh = false;
+var playerAttacking = 0; //Which player's raid boss are we currently attacking?
+var refresh = false; //Are we doing a refresh?
 
-var NOTIFY_CHANNEL;
+var NOTIFY_CHANNEL; //Channel we are posting our call messages in
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -29,30 +29,30 @@ var bot = new Discord.Client({
    token: auth.token,
    autorun: true
 });
-bot.on('ready', function (evt) {
+bot.on('ready', function (evt) { //Log bot info on launch
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
-var time = function() {
-    timer+=1;
+var time = function() { //We're doing our callouts here!
+    timer++; //Increment our timer...
     logger.info(timer);
-    if (timer > refreshTime && refresh) {
-        refresh = false;
-    } else if (timer > callTime && !refresh) {
-        bot.sendMessage({
+    if (timer > refreshTime && refresh) { //If we exceed our refresh timer during a refresh...
+        refresh = false; //...stop the refresh
+    } else if (timer > callTime && !refresh) { //If our timer exceeds our calltimer, send a new raid notification!
+        bot.sendMessage({ //Notify everyone
             to: NOTIFY_CHANNEL,
-            message: "Attack "+raidQueue[playerAttacking]+"'s boss, <@&383407248422207490>!"
+            message: "Attack "+raidQueue[playerAttacking]+"'s boss, <@&383407248422207490>!" //Replace brackets w/ appropriate role ID
         });
-        timer = 0;
-        playerAttacking++;
-        if (playerAttacking > raidQueue.length-1) {
-            playerAttacking = 0;
-            refresh = true;
-            bot.sendMessage({
+        timer = 0; //Reset our timer
+        playerAttacking++; //Change the player in the queue
+        if (playerAttacking > raidQueue.length-1) { //We've reached the end of the queue!
+            playerAttacking = 0; //Start back from the beginning!
+            refresh = true; //Give players the chance to summon new raid bosses
+            bot.sendMessage({ //Notify everyone
                 to: NOTIFY_CHANNEL,
-                message: "Refresh your bosses <@&383407248422207490>!"
+                message: "Refresh your bosses <@&383407248422207490>!" //Replace brackets w/ appropriate role ID
             });
         }
     }
@@ -62,11 +62,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `~`
 
-    if (message.substring(0, 1) == '~') {
-        var args = message.substring(1).split(' ');
-        var cmd = args[0];
+    if (message.substring(0, 1) == '~') { //For now, all of our bot commands will start with a ~
+        var args = message.substring(1).split(' '); //Allows arguments to be a thing
+        var cmd = args[0]; //args[0] will be our initial command
        
-        //args = args.splice(1);
         switch(cmd) {
 
             //QUEUE COMMANDS//
@@ -252,7 +251,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
             break;
 
-            case 'help':
+            case 'help': //Display all of our commands!
                 bot.sendMessage({
                     to: channelID,
                     message: "Available commands:\n~q [PLAYER(S)]: Adds player(s) to the raid queue\n~qcheck: Lists all players queued\n~qclear: Removes all players from raid queue\n~qremove [PLAYER]: Removes player from the raid queue\n~raidstart: Starts the raid callouts\n~raidstop: Ends the raid callouts\n~calltime [SECONDS]: Resets call time in seconds. Leaving the argument empty will display current time.\n~refreshtime [SECONDS]: Same as above but for the refresh timer\n~skip: Skips to the next player in the raid queue. Does nothing if there is not a raid going on."
