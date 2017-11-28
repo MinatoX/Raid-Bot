@@ -122,7 +122,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 var qString = "";
                 for (var i=0; i<raidQueue.length; i++) { //Loop to construct the queue list
                     if (raidQueue.length == 1) {
-                        qString = "just "+raidQueue[0];
+                        qString = " "+raidQueue[0];
                     } else {
                         if (i!=raidQueue.length-1) {
                             qString = qString+" "+raidQueue[i]+",";
@@ -132,12 +132,18 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     }
                 }
 
-                if (raidQueue.length !== 0) { //Make sure we aren't dealing with an empty queue
+                if (raidQueue.length !== 0 || raidQueue.length != 1) { //Make sure we aren't dealing with an empty queue
                     bot.sendMessage({
                         to: channelID,
                         message: "The players currently raiding are"+qString
                     });
-                } else { //If the queue *is* empty...
+                } else if (raidQueue.length == 1) {
+                    bot.sendMessage({
+                        to: channelID,
+                        message: "The only player raiding is"+qString
+                    })
+                } 
+                else { //If the queue *is* empty...
                     bot.sendMessage({ //Let the user know
                         to: channelID,
                         message: "Nobody is in the raiding queue! Go add some players!"
@@ -146,9 +152,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             break;
 
             case 'qclear': //Clear the entire raid queue
-                for (var i = 0; i < raidQueue.length; i++) {
-                    raidQueue.splice(i, 1); //Just get rid of everyone
-                }
+                raidQueue = [];
 
                 //Send the message
                 bot.sendMessage({
