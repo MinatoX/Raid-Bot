@@ -1,13 +1,14 @@
-//Mandatory variables to make the bot work
+//Mandatory Discord variables
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
+
 
 //My own bot variables
 var raidQueue = []; //Contains all raiding players
 var dupe = false; //For duplicate names
 var callTime = 60; //Time in seconds between callouts
-var refreshTime = 90; //Time in seconds for refreshing bosses
+var refreshTime = 160; //Time in seconds for refreshing bosses
 
 var activeRaid = false; //Are we currently raiding?
 var timer = 0; //Countdown until we move on
@@ -33,10 +34,13 @@ var bot = new Discord.Client({
    token: auth.token,
    autorun: true
 });
+
 bot.on('ready', function (evt) { //Log bot info on launch
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+
+    bot.setPresence({game: {name: "KHUx | ~help for help", type: 0}});
 });
 
 var time = function() { //We're doing our callouts here!
@@ -47,7 +51,7 @@ var time = function() { //We're doing our callouts here!
     } else if (timer > callTime && !refresh) { //If our timer exceeds our calltimer, send a new raid notification!
         bot.sendMessage({ //Notify everyone
             to: NOTIFY_CHANNEL,
-            message: "Attack "+raidQueue[playerAttacking]+"'s boss,"+currentID+"!" //Make the callout
+            message: "Attack "+raidQueue[playerAttacking]+"'s boss, "+currentID+"!" //Make the callout
         });
         timer = 0; //Reset our timer
         playerAttacking++; //Change the player in the queue
@@ -194,7 +198,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 } else {
                     bot.sendMessage({
                         to: channelID,
-                        message: 'Something went wrong! Make sure there is not an ongoing raid or an empty raid queue!'
+                        message: 'Something went wrong! Make sure there is not an ongoing raid or an empty raid queue! Be sure to also specify "Templars" or "Paladins"!'
                     });
                 }
 
@@ -264,10 +268,59 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
             break;
 
+            case 'reset':
+                timer = 0;
+                bot.sendMessage({
+                    to: channelID,
+                    message: "Timer has been reset!"
+                })
+
+            break;
+
+            case 'time':
+                timer = 0;
+                bot.sendMessage({
+                    to: channelID,
+                    message: "Timer is currently at "+timer+" seconds!"
+                })
+
+            break;
+
+            case 'pause':
+                clearInterval(timeInt);
+                bot.sendMessage({
+                    to: channelID,
+                    message: "Raiding paused! Take it easy for a bit guys!"
+                })
+
+            break;
+
+            case 'resume':
+                timeInt = setInterval(time, 1000);
+                bot.sendMessage({
+                    to: channelID,
+                    message: "Raiding has been resumed! Fight on Knights!"
+                });
+
+            break;
+
+            //EXTRAS//
+            case 'bop':
+                if (!activeRaid) {
+                    bot.sendMessage({
+                        to: channelID,
+                        message: "You can only use this command during an ongoing raid!"
+                    });
+                }
+                
+
+            break;
+
+
             case 'help': //Display all of our commands!
                 bot.sendMessage({
                     to: channelID,
-                    message: "Available commands:\n~q [PLAYER(S)]: Adds player(s) to the raid queue\n~qcheck: Lists all players queued\n~qclear: Removes all players from raid queue\n~qremove [PLAYER]: Removes player from the raid queue\n~raidstart [TEMPLARS/PALADINS]: Starts the raid callouts for the respective group\n~raidstop: Ends the raid callouts\n~calltime [SECONDS]: Resets call time in seconds. Leaving the argument empty will display current time.\n~refreshtime [SECONDS]: Same as above but for the refresh timer\n~skip: Skips to the next player in the raid queue. Does nothing if there is not a raid going on."
+                    message: "Available commands:\n\n~q [PLAYER(S)]: Adds player(s) to the raid queue\n\n~qcheck: Lists all players queued\n\n~qclear: Removes all players from raid queue\n\n~qremove [PLAYER]: Removes player from the raid queue\n\n~raidstart [TEMPLARS/PALADINS]: Starts the raid callouts for the respective group\n\n~raidstop: Ends the raid callouts\n\n~calltime [SECONDS]: Resets call time in seconds. Leaving the argument empty will display current time.\n\n~refreshtime [SECONDS]: Same as above but for the refresh timer\n\n~skip: Skips to the next player in the raid queue. Does nothing if there is not a raid going on.\n\n~pause: Stops the timer\n\n~resume: Start the timer again\n\n~timer: Check the current time in seconds\n\n~reset: Sets timer to 0"
                 });
 
             break;
