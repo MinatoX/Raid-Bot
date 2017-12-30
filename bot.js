@@ -73,7 +73,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     if (message.substring(0, 1) == '~') { //For now, all of our bot commands will start with a ~
         var args = message.substring(1).split(' '); //Allows arguments to be a thing
         var cmd = args[0]; //args[0] will be our initial command
-       
+
         switch(cmd) {
 
             //QUEUE COMMANDS//
@@ -146,7 +146,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         to: channelID,
                         message: "The only player raiding is"+qString
                     })
-                } 
+                }
                 else { //If the queue *is* empty...
                     bot.sendMessage({ //Let the user know
                         to: channelID,
@@ -312,7 +312,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         message: "You can only use this command during an ongoing raid!"
                     });
                 }
-                
+
 
             break;
 
