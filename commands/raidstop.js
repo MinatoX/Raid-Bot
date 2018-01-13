@@ -6,6 +6,13 @@ module.exports.run = async (bot, message, args, cfg) => { //this is what will ru
       clearInterval(cfg.timeInt);
       cfg.timer = 0;
 
+      //removes players in raid party role
+      let role = message.guild.roles.find("name", "Raid party");
+      for(var i = 0; i < cfg.boosters.length; i++){
+          let member = message.guild.members.find(item => item.user.username === cfg.boosters[i]);
+          member.removeRole(role).catch(console.error);
+      }
+
   } else {
     message.channel.send('There is no ongoing raid!').catch(console.error);
 
