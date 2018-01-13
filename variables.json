@@ -1,0 +1,19 @@
+{
+  "prefix": "~",
+  "raidQueue" : [],
+  "boosters" : [],
+  "dupe" : false,
+  "callTime" : 60,
+  "refreshTime" : 160,
+  "activeRaid" : false,
+  "timer" : 0,
+  "timeInt" : "",
+  "playerAttacking" : 0,
+  "refresh" : false,
+  "currentID" : "",
+  "templarID" : "<@&382682913529135105>",
+  "paladinID" : "<@&285952745792471042>",
+  "NOTIFY_CHANNEL" : "",
+  "dupe": false,
+  "time" : ""
+}

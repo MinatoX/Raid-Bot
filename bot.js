@@ -1,27 +1,32 @@
 //Mandatory Discord variables
-var Discord = require('discord.io');
+//var Discord = require('discord.io'); (og)
 var logger = require('winston');
 var auth = require('./auth.json');
+const {Client} = require('discord.js');
+const bot = new Client();
+var cfg = require('./variables.json');//holds all variables used(jaja)
+var fs = require('fs');// needed node.js package(jaja)
 
 
 //My own bot variables
-var raidQueue = []; //Contains all raiding players
-var dupe = false; //For duplicate names
-var callTime = 60; //Time in seconds between callouts
-var refreshTime = 160; //Time in seconds for refreshing bosses
+/*
+raidQueue - Contains all raiding players
+dupe - For duplicate names
+callTime - Time in seconds between callouts
+refreshTime - Time in seconds for refreshing bosses
 
-var activeRaid = false; //Are we currently raiding?
-var timer = 0; //Countdown until we move on
-var timeInt; //Holds the interval for our time function
+activeRaid - Are we currently raiding?
+timer - Countdown until we move on
+timeInt - Holds the interval for our time function
 
-var playerAttacking = 0; //Which player's raid boss are we currently attacking?
-var refresh = false; //Are we doing a refresh?
+playerAttacking - Which player's raid boss are we currently attacking?
+refresh - Are we doing a refresh?
+templarID - role id
+paladinID - role id
+NOTIFY_CHANNEL - Channel we are posting our call messages in
+*/
 
-var NOTIFY_CHANNEL; //Channel we are posting our call messages in
-
-var templarID = "<@&382682913529135105>";
-var paladinID = "<@&285952745792471042>";
-var currentID = paladinID;
+var currentID = cfg.paladinID;
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -29,6 +34,38 @@ logger.add(logger.transports.Console, {
     colorize: true
 });
 logger.level = 'debug';
+
+//command handler
+bot.on('ready', () => {
+});
+
+bot.on('message', msg => {
+  if(msg.author.bot || !msg.content.startsWith(cfg.prefix)) return;
+  const args = msg.content.slice(cfg.prefix.length).split(/ +/);//set args to hold parameter passed in message(jaja)
+  const cmd = args.shift().toLowerCase();//sets cmd to command specified in message(jaja)
+  try {
+  let commandFile = require(`./commands/${cmd}.js`);//sets commandFile to path for needed js file(jaja)
+  commandFile.run(bot, msg, args, cfg);//runs command called(jaja)
+} catch (err) {
+  console.error(err);
+}
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: auth.token,
@@ -70,10 +107,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `~`
 
-    if (message.substring(0, 1) == '~') { //For now, all of our bot commands will start with a ~
+    if (message.substring(0, 1) == '~' &&  user!=bot.username) { //For now, all of our bot commands will start with a ~
         var args = message.substring(1).split(' '); //Allows arguments to be a thing
         var cmd = args[0]; //args[0] will be our initial command
-
         switch(cmd) {
 
             //QUEUE COMMANDS//
@@ -325,5 +361,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
             break;
          }
-     }
-});
+     } //og bot
+});*/
+bot.login(auth.token);
