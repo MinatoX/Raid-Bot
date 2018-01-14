@@ -1,12 +1,13 @@
 //ARG [PLAYERNAME] //Add a player to the queue
 module.exports.run = async (bot, message, args,cfg) => { //this is what will run when the command is called.
-    var channelID = cfg.paladinID;
+
     for (var i=0; i<args.length; i++) {
 
         if (args[i] == cfg.raidQueue[i]) { //Make sure the player isn't already in the queue
 
             cfg.dupe = true;
-        }
+            message.channel.send("your in the raid party");
+          }
     }
 
     if (args[0] != "" && !cfg.dupe) { //Let the user know their player was added to the queue!
