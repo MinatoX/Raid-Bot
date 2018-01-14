@@ -12,6 +12,12 @@ module.exports.run = async (bot, message, args, cfg) => { //this is what will ru
           let member = message.guild.members.find(item => item.user.username === cfg.boosters[i]);
           member.removeRole(role).catch(console.error);
       }
+      for(var i = 0; i < cfg.raidQueue.length; i++){
+          let member = message.guild.members.find(item => item.user.username === cfg.raidQueue[i]);
+          member.removeRole(role).catch(console.error);
+      }
+      cfg.raidQueue = [];
+      cfg.boosters = [];
 
   } else {
     message.channel.send('There is no ongoing raid!').catch(console.error);
