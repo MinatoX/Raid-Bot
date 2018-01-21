@@ -1,12 +1,13 @@
 //Mandatory Discord variables
 //var Discord = require('discord.io'); (og)
-var logger = require('winston');
+
 var auth = require('./auth.json');
 const {Client} = require('discord.js');
 const bot = new Client();
 var cfg = require('./variables.json');//holds all variables used(jaja)
 var fs = require('fs');// needed node.js package(jaja)
-
+cfg.logger = require('winston');
+cfg.schedule = require('node-schedule');
 
 //My own bot variables
 /*
@@ -29,11 +30,11 @@ NOTIFY_CHANNEL - Channel we are posting our call messages in
 var currentID = cfg.paladinID;
 
 // Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(logger.transports.Console, {
+cfg.logger.remove(cfg.logger.transports.Console);
+cfg.logger.add(cfg.logger.transports.Console, {
     colorize: true
 });
-logger.level = 'debug';
+cfg.logger.level = 'debug';
 
 //command handler
 bot.on('ready', () => {
