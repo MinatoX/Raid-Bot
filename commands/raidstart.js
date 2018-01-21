@@ -1,10 +1,10 @@
 //ARG [TEMPLARS OR PALADINS] //Starts the raid calls
 module.exports.run = async (bot, message, args, cfg) => { //this is what will run when the command is called.
-  var logger = require('winston');
+  //var logger = require('winston');
 
    cfg.time = function() { //We're doing our callouts here!
       cfg.timer++; //Increment our timer...
-      logger.info(cfg.timer);
+      cfg.logger.info(cfg.timer);
       if (cfg.timer > cfg.refreshTime && cfg.refresh) { //If we exceed our refresh timer during a refresh...
           cfg.refresh = false; //...stop the refresh
       } else if (cfg.timer > cfg.callTime && !cfg.refresh) { //If our timer exceeds our calltimer, send a new raid notification!
@@ -22,13 +22,9 @@ module.exports.run = async (bot, message, args, cfg) => { //this is what will ru
   };
 
   //ARG [TEMPLARS OR PALADINS] //Starts the raid calls
-     if (!cfg.activeRaid && cfg.raidQueue.length > 0 && args[0] == "templars" || args[0] == "paladins") {
+     if (!cfg.activeRaid && cfg.raidQueue.length > 0 ) {
          cfg.activeRaid = true;
-         if (args[0] == "templars") {
-             cfg.currentID = cfg.templarID;
-         } else {
-             cfg.currentID = cfg.paladinID;
-         }
+         cfg.channelID = message.guild.roles.find("name", "Raid party");
          cfg.NOTIFY_CHANNEL = cfg.channelID;
          message.channel.send('Starting the raid! Type "raidstop" to stop the raid. Callouts are made every ' +cfg.callTime+ ' seconds with a refresh time at the end of the queue set to ' +cfg.refreshTime+ ' seconds.').catch(console.error);
 
