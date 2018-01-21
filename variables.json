@@ -15,5 +15,11 @@
   "paladinID" : "<@&285952745792471042>",
   "NOTIFY_CHANNEL" : "",
   "dupe": false,
-  "time" : ""
+  "time" : "",
+  "logger" : "",
+  "schedule" : "",
+  "start4" : "",
+  "start8" : "",
+  "stop4" : "",
+  "stop8" : ""
 }
