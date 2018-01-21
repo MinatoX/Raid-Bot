@@ -21,5 +21,7 @@
   "start4" : "",
   "start8" : "",
   "stop4" : "",
-  "stop8" : ""
+  "stop8" : "",
+  "raidStat" : [],
+  "hasStat" : false
 }
