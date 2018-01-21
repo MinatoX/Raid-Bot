@@ -18,6 +18,7 @@ module.exports.run = async (bot, message, args, cfg) => { //this is what will ru
       }
       cfg.raidQueue = [];
       cfg.boosters = [];
+      cfg.playerAttacking = 0;
 
   } else {
     message.channel.send('There is no ongoing raid!').catch(console.error);
