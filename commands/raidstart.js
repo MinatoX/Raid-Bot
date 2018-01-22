@@ -24,7 +24,7 @@ module.exports.run = async (bot, message, args, cfg) => { //this is what will ru
   //ARG [TEMPLARS OR PALADINS] //Starts the raid calls
      if (!cfg.activeRaid && cfg.raidQueue.length > 0 ) {
          cfg.activeRaid = true;
-         cfg.channelID = message.guild.roles.find("name", "Raid party");
+         cfg.currentID = message.guild.roles.find("name", "Raid party");
          cfg.NOTIFY_CHANNEL = cfg.channelID;
          message.channel.send('Starting the raid! Type "raidstop" to stop the raid. Callouts are made every ' +cfg.callTime+ ' seconds with a refresh time at the end of the queue set to ' +cfg.refreshTime+ ' seconds.').catch(console.error);
 
