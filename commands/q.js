@@ -2,7 +2,6 @@
 module.exports.run = async (bot, message, args,cfg) => { //this is what will run when the command is called.
   //command logs that a user has boosted and adds them to the raid party
   var response = "";
-  console.log(args[0]);
     if (args[0] === "rem"){//un do accidental boost call
 
         var i = cfg.raidQueue.indexOf(message.member.user.username);
@@ -44,10 +43,14 @@ module.exports.run = async (bot, message, args,cfg) => { //this is what will run
       let member = message.guild.members.find(item => item.user.username === args[0]);
       if(member !== null){
         member.addRole(role).catch(console.error);
-        for(var i = 0; i<args.length; i++){
-          console.log('in loop');
+        cfg.raidQueue.push(member.user.username);//adds player to the raid queue
+
+        for(var i = 1; i<args.length; i++){
+
           member = message.guild.members.find(item => item.user.username === args[i]);
           member.addRole(role).catch(console.error);
+          cfg.raidQueue.push(member.user.username);//adds player to the raid queue
+
         }
         for(var j = 0; j<args.length; j++){
           response += `${args[j]} `;
