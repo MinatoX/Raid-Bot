@@ -22,7 +22,7 @@ module.exports.run = async (bot, message, args, cfg) => { //this is what will ru
             if (message.member.user.username == cfg.raidQueue[i - 1]) { //Make sure the player isn't already in the queue
 
                 cfg.dupe = true;
-                message.channel.send("your in the raid party");
+                message.channel.send("you're in the raid party");
               }
         }
         if (!cfg.dupe) { //Let the user know their player was already added to the queue!

@@ -13,7 +13,7 @@ module.exports.run = async (bot, message, args,cfg) => { //this is what will run
         let role = message.guild.roles.find("name", "Raid party");
         let member = message.guild.members.find(item => item.user.username === message.member.user.username);
         member.removeRole(role).catch(console.error);
-        message.channel.send("You have left from the Raid Party").catch(console.error);
+        message.channel.send("You have left the Raid Party").catch(console.error);
 
     }else if(args[0] == null){//queues the user that sent the command
           for (var i=0; i<cfg.raidQueue.length + 1; i++) {
@@ -21,7 +21,7 @@ module.exports.run = async (bot, message, args,cfg) => { //this is what will run
               if (message.member.user.username == cfg.raidQueue[i - 1]) { //Make sure the player isn't already in the queue
 
                   cfg.dupe = true;
-                  message.channel.send("your in the raid party");
+                  message.channel.send("you're in the raid party");
                 }
           }
 
